@@ -1,33 +1,70 @@
 import { Timestamp } from "bson";
 import { timeStamp } from "console";
-import mongoose  from "mongoose";
+import { validate } from "json-schema";
+import mongoose from "mongoose";
 import { type } from "os";
 
-const subscriptionSchema = mongoose.Schema({
+const subscriptionSchema = mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true,
-        trim: true,
-        minLength: 2,
-        maxLength: 100
+      type: String,
+      required: true,
+      trim: true,
+      minLength: 2,
+      maxLength: 100,
     },
     price: {
-        type: Number,
-        required: [true, 'Subscription Fees is required'],
-        min: 0,
-        max: 1000
+      type: Number,
+      required: [true, "Subscription Fees is required"],
+      min: 0,
+      max: 1000,
     },
     currency: {
-        type: Number,
-        enum: ['USD', 'PKR', 'INR'],
-        default: 'USD'
+      type: Number,
+      enum: ["USD", "PKR", "INR"],
+      default: "USD",
     },
     frequency: {
-        type: String,
-        enum: ['daily', 'weekly', 'monthly', 'yearly']
+      type: String,
+      enum: ["daily", "weekly", "monthly", "yearly"],
     },
     category: {
-        type: String,
-        enum: ['sport', 'news', 'music', 'movies', 'fitness'] 
-    }
-}, { timeStamp: true });
+      type: String,
+      enum: ["sport", "news", "music", "movies", "fitness"],
+    },
+    paymentMethod: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Expired", "canceled"],
+    },
+    startDate: {
+      type: Date,
+      required: true,
+      validate: {
+        validator: (value) => value <= new Date(),
+        messege: "Start date must be in the past",
+      },
+    },
+    renewalDate: {
+        type: Date,
+        required: true,
+        validate: {
+          validator: function (value) { return value >this.startDate},
+          messege: "Renewal date must be in the future",
+        },
+      },
+
+      user:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        rquired: true
+      }
+
+
+  },
+  { timeStamp: true }
+);
