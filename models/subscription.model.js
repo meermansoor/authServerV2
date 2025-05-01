@@ -87,7 +87,8 @@ subscriptionSchema.pre('save', function () {
     
   }
 
-  next();
+   // eslint-disable-next-line no-undef
+   next();
 });
 
 const Subscription = mongoose.model("Subscription", subscriptionSchema);
