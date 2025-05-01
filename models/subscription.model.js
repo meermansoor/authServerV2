@@ -68,3 +68,22 @@ const subscriptionSchema = mongoose.Schema(
   },
   { timeStamp: true }
 );
+
+subscriptionSchema.pre('save', function () {
+  if (!this.renewalDate) {
+    const renewalPeriods =  {
+      daily: 1,
+      weekly: 7,
+      monthly: 30,
+      yearly: 365,
+    };
+
+    this.renewalDate = new Date(this.startDate);
+    this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency]);
+
+    if (this.renewalDate <= this.startDate) {
+      throw new Error("Renewal date must be in the future");
+    }
+    
+  }
+});
