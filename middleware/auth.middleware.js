@@ -5,33 +5,31 @@ import User from '../models/user.model.js';
 export const authorize = async (req, res, next) => {
     try {
         let token;
-        if (req.headers.authorization && req.header.authorization.startsWith('Bearer')) {
 
+        // Check if Authorization header exists and starts with 'Bearer'
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
+        } else {
+            return res.status(401).json({ message: 'Not authorized: Token missing' });
+        }
 
-            if (!token) {
-                const error = new Error('Not authorized, no token');
-                error.statusCode = 401;
-                throw error;
-            }
+        console.log(`Token: ${token}`);
 
-            const decoded = jwt.verify(token, JWT_SECRET);
+        // Verify token
+        const decoded = jwt.verify(token, JWT_SECRET);
 
-            const user = await User.findById(decoded.userId).select('-password');
+        // Check if user exists
+        const user = await User.findById(decoded.userId).select('-password');
+        if (!user) {
+            return res.status(401).json({ message: 'Not authorized, user not found' });
+        }
 
-            if (!user) { return res.status(401).json({ message: 'Not authorized, user not found' }) };
-
-            req.user = user;
-            next();
-
-
-        };
-
-        const error = new Error('Not authorized');
-        res.status(401).json({ message: 'Not authorized ', error: error.message });
+        // Attach user to request
+        req.user = user;
+        next();
 
     } catch (error) {
-        next(error);
-
+        console.error('Authorization error:', error.message);
+        return res.status(401).json({ message: 'Not authorized', error: error.message });
     }
 };

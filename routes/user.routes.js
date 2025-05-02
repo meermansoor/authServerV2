@@ -4,8 +4,8 @@ import { authorize } from '../middleware/auth.middleware.js';
 
 const userRouter = Router();
 
-userRouter.get('/', authorize, getUsers );
-userRouter.get('/:id', authorize, getUser );
+userRouter.get('/', getUsers );
+userRouter.get('/:id', authorize ,getUser );
 // userRouter.post('/', createUser);
 // userRouter.put('/:id',putUser);
 // userRouter.delete('/:id', deleteUser);
