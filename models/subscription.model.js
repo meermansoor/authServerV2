@@ -1,8 +1,4 @@
-import { Timestamp } from "bson";
-import { timeStamp } from "console";
-import { validate } from "json-schema";
 import mongoose from "mongoose";
-import { type } from "os";
 
 const subscriptionSchema = mongoose.Schema(
   {
@@ -20,7 +16,7 @@ const subscriptionSchema = mongoose.Schema(
       max: 1000,
     },
     currency: {
-      type: Number,
+      type: String,
       enum: ["USD", "PKR", "INR"],
       default: "USD",
     },
@@ -30,7 +26,7 @@ const subscriptionSchema = mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["sport", "news", "music", "movies", "fitness"],
+      enum: ["Entertainment", "news", "music", "movies", "fitness"],
     },
     paymentMethod: {
       type: String,
@@ -51,7 +47,7 @@ const subscriptionSchema = mongoose.Schema(
     },
     renewalDate: {
         type: Date,
-        required: true,
+        required: false,
         validate: {
           validator: function (value) { return value >this.startDate},
           messege: "Renewal date must be in the future",
@@ -69,7 +65,7 @@ const subscriptionSchema = mongoose.Schema(
   { timeStamp: true }
 );
 
-subscriptionSchema.pre('save', function () {
+subscriptionSchema.pre('save', function (next) {
   if (!this.renewalDate) {
     const renewalPeriods =  {
       daily: 1,
@@ -86,8 +82,6 @@ subscriptionSchema.pre('save', function () {
     }
     
   }
-
-   // eslint-disable-next-line no-undef
    next();
 });
 

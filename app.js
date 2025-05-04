@@ -6,11 +6,13 @@ import authRouter from './routes/auth.routes.js';
 import connectDB from './database/mongoDB.js';
 import errorMiddleWare from './middleware/error.middleware.js';
 import cookieParser from 'cookie-parser';
+// import arcjetMiddleware from './middleware/arcjet.middleware.js';
 
 
 
 const app = express();
-app.use(errorMiddleWare); 
+app.use(errorMiddleWare);
+// app.use(arcjetMiddleware); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
