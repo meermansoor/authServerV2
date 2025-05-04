@@ -6,6 +6,7 @@ import authRouter from './routes/auth.routes.js';
 import connectDB from './database/mongoDB.js';
 import errorMiddleWare from './middleware/error.middleware.js';
 import cookieParser from 'cookie-parser';
+import workflowRouter from './routes/workflow.routes.js';
 // import arcjetMiddleware from './middleware/arcjet.middleware.js';
 
 
@@ -21,6 +22,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/subscription', subscriptionRouter);
 app.use('/api/v1/subscription/upcomingrenewals', subscriptionRouter);
+app.use('/api/v1/workflow', workflowRouter);
 
 
 
