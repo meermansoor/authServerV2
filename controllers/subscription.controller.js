@@ -1,27 +1,31 @@
 import Subscription from "../models/subscription.model.js";
 
-
 export const createSubscritpion = async (req, res, next) => {
+  try {
+    const subscription = await Subscription.create({
+      ...req.body,
+      user: req.user._id,
+    });
+
+    res.status(201).json({ success: true, data: subscription });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserSubcription = async (req, res, next) => {
     try {
-        const subscription = await Subscription.create({
-            ...req.body,
-            user: req.user._id,
+      if (req.user.id != req.params.id) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized to access this resource",
         });
-
-        res.status(201).json({success:true , data: subscription });
+      }
+  
+      const subscription = await Subscription.find({ user: req.params.id });
+  
+      return res.status(200).json({ success: true, data: subscription }); // <-- Add return here
     } catch (error) {
-        next(error);
-        
+      return next(error);
     }
-}
-
-
-export const getUserSubcription = async (req, res ,next) =>
-{
-    try {
-        
-    } catch (error) {
-        next(error);
-        
-    }
-}
+  };

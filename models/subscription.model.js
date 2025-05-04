@@ -42,7 +42,7 @@ const subscriptionSchema = mongoose.Schema(
       required: true,
       validate: {
         validator: (value) => value <= new Date(),
-        messege: "Start date must be in the past",
+        message: "Start date must be in the past",
       },
     },
     renewalDate: {
@@ -57,12 +57,12 @@ const subscriptionSchema = mongoose.Schema(
       user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        rquired: true
+        required: true
       }
 
 
   },
-  { timeStamp: true }
+  { timestamp: true }
 );
 
 subscriptionSchema.pre('save', function (next) {
