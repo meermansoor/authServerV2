@@ -1,4 +1,5 @@
 import Subscription from "../models/subscription.model.js";
+import User from "../models/user.model.js";
 
 export const createSubscritpion = async (req, res, next) => {
   try {
@@ -29,3 +30,25 @@ export const getUserSubcription = async (req, res, next) => {
       return next(error);
     }
   };
+
+  export const getAllSubscriptions = async (req, res, next) => {
+
+    try {
+        const subscriptions = await Subscription.find();
+        const userNames = await User.find({}).select('name');
+
+        const subscriptionsWithUsernames = subscriptions.map(subscription => {
+            const username = userNames.find(user => user._id.toString() === subscription.user.toString()).name;
+            return { username,...subscription._doc };
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Subscriptions retrieved successfully",
+            subscriptions: subscriptionsWithUsernames,
+        });
+
+    }catch (error) {
+        next(error);
+    }
+  }
