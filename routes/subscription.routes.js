@@ -4,7 +4,7 @@ import { createSubscritpion, getUserSubcription, getAllSubscriptions} from '../c
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get('/', getAllSubscriptions);
+subscriptionRouter.get('/', authorize ,getAllSubscriptions);
 
 subscriptionRouter.get('/:id', (req, res) => { res.send({ title: 'GET subscriptions details' }) });
 
